@@ -67,3 +67,59 @@ def test_dangerous_write_uses_approval(tmp_path: Path):
     assert result == "OK: wrote 4 chars to big.txt"
     assert big.read_text(encoding="utf-8") == "tiny"
 
+
+def test_edit_file_replaces_line_range(tmp_path: Path):
+    target = tmp_path / "notes.txt"
+    target.write_text("one\ntwo\nthree\n", encoding="utf-8")
+    registry = build_default_registry(tmp_path)
+
+    result = registry.call(
+        "edit_file",
+        {
+            "path": "notes.txt",
+            "start_line": 2,
+            "end_line": 2,
+            "new_content": "TWO",
+        },
+    )
+
+    assert result == "OK: edited notes.txt:2-2"
+    assert target.read_text(encoding="utf-8") == "one\nTWO\nthree\n"
+
+
+def test_edit_file_plan_only(tmp_path: Path):
+    target = tmp_path / "notes.txt"
+    target.write_text("one\ntwo\n", encoding="utf-8")
+    registry = build_default_registry(tmp_path)
+
+    result = registry.call(
+        "edit_file",
+        {
+            "path": "notes.txt",
+            "start_line": 1,
+            "end_line": 1,
+            "new_content": "ONE",
+            "plan_only": True,
+        },
+    )
+
+    assert result.startswith("PLAN: CAUTION")
+    assert target.read_text(encoding="utf-8") == "one\ntwo\n"
+
+
+def test_edit_file_rejects_out_of_bounds_range(tmp_path: Path):
+    target = tmp_path / "notes.txt"
+    target.write_text("one\n", encoding="utf-8")
+    registry = build_default_registry(tmp_path)
+
+    result = registry.call(
+        "edit_file",
+        {
+            "path": "notes.txt",
+            "start_line": 2,
+            "end_line": 2,
+            "new_content": "nope",
+        },
+    )
+
+    assert "out of bounds" in result

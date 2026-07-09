@@ -158,3 +158,113 @@ def register_file_tools(
         )
     )
 
+    def edit_file(
+        path: str,
+        start_line: int,
+        end_line: int,
+        new_content: str,
+        plan_only: bool = False,
+    ) -> str:
+        if start_line < 1 or end_line < start_line:
+            return "ERROR: invalid line range"
+        try:
+            target = resolve_workspace_path(workspace, path)
+            lines = target.read_text(encoding="utf-8", errors="replace").splitlines(keepends=True)
+        except FileNotFoundError:
+            return f"ERROR: file not found: {path}"
+        except IsADirectoryError:
+            return f"ERROR: path is a directory: {path}"
+        except ValueError as exc:
+            return f"ERROR: {exc}"
+
+        if end_line > len(lines):
+            return f"ERROR: line range out of bounds: file has {len(lines)} lines"
+
+        replacement = new_content.splitlines(keepends=True)
+        if new_content and not new_content.endswith("\n"):
+            replacement[-1:] = [replacement[-1] + "\n"] if replacement else [new_content + "\n"]
+        updated = lines[: start_line - 1] + replacement + lines[end_line:]
+        before = "".join(lines)
+        after = "".join(updated)
+        decision = classify_write(
+            target,
+            workspace,
+            existing_bytes=len(before.encode("utf-8")),
+            new_bytes=len(after.encode("utf-8")),
+            mode="overwrite",
+        )
+        details = {
+            "path": path,
+            "start_line": start_line,
+            "end_line": end_line,
+            "plan_only": plan_only,
+        }
+
+        if plan_only:
+            audit_sink.record(
+                tool="edit_file",
+                decision=decision,
+                outcome="plan_only",
+                workspace=workspace,
+                details=details,
+            )
+            return f"PLAN: {decision.tier.name} {decision.reason}: would edit {path}:{start_line}-{end_line}"
+
+        if decision.tier is RiskTier.BLOCKED:
+            audit_sink.record(
+                tool="edit_file",
+                decision=decision,
+                outcome="refused",
+                workspace=workspace,
+                details=details,
+            )
+            return f"REFUSED: blocked edit ({decision.reason})"
+
+        if decision.tier.at_least(RiskTier.DANGEROUS):
+            if approval_policy is None:
+                audit_sink.record(
+                    tool="edit_file",
+                    decision=decision,
+                    outcome="no_approver",
+                    workspace=workspace,
+                    details=details,
+                )
+                return f"REFUSED: edit requires approval ({decision.reason})"
+            if not approval_policy.decide(decision, "edit_file", path):
+                audit_sink.record(
+                    tool="edit_file",
+                    decision=decision,
+                    outcome="denied",
+                    workspace=workspace,
+                    details=details,
+                )
+                return "Edit cancelled."
+
+        target.write_text(after, encoding="utf-8")
+        audit_sink.record(
+            tool="edit_file",
+            decision=decision,
+            outcome="executed",
+            workspace=workspace,
+            details=details,
+        )
+        return f"OK: edited {path}:{start_line}-{end_line}"
+
+    registry.register(
+        ToolSpec(
+            name="edit_file",
+            description="Replace an inclusive line range in a UTF-8 text file inside the workspace.",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string"},
+                    "start_line": {"type": "integer"},
+                    "end_line": {"type": "integer"},
+                    "new_content": {"type": "string"},
+                    "plan_only": {"type": "boolean", "default": False},
+                },
+                "required": ["path", "start_line", "end_line", "new_content"],
+            },
+            fn=edit_file,
+        )
+    )

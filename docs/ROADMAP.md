@@ -20,7 +20,7 @@ Deadline target: Monday, July 13, 2026.
 - [x] Add audit sink
 - [x] Add approval policy
 - [x] Add write file tool with plan-only support
-- [ ] Add edit file tool with line-range safety
+- [x] Add edit file tool with line-range safety
 - [x] Add shell tool with timeout, output truncation, and approval gates
 - [ ] Add search tools
 - [ ] Add git tools
