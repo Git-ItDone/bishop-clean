@@ -4,6 +4,10 @@ from dataclasses import dataclass
 from typing import Protocol, Any
 
 
+class ModelClientError(RuntimeError):
+    """Raised when a model provider response cannot be used."""
+
+
 @dataclass(frozen=True)
 class ToolCall:
     id: str
@@ -20,4 +24,3 @@ class ModelMessage:
 class ModelClient(Protocol):
     def complete(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]]) -> ModelMessage:
         raise NotImplementedError
-

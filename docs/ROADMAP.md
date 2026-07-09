@@ -28,7 +28,7 @@ Deadline target: Monday, July 13, 2026.
 ## Phase 3 - Agent Runtime
 
 - [x] Define model-client protocol
-- [ ] Add Ollama/OpenAI-compatible client
+- [x] Add Ollama/OpenAI-compatible client
 - [ ] Normalize tool calls from structured and fallback text output
 - [x] Build agent loop against protocols
 - [x] Add max-turn handling
@@ -45,7 +45,7 @@ Deadline target: Monday, July 13, 2026.
 
 ## Phase 5 - Runtime Surfaces
 
-- [ ] Polish CLI one-shot mode
+- [x] Polish CLI one-shot mode
 - [ ] Add REPL/resume mode
 - [ ] Add ACP adapter
 - [ ] Add local host API only after CLI is stable
