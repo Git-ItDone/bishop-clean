@@ -22,7 +22,7 @@ Deadline target: Monday, July 13, 2026.
 - [x] Add write file tool with plan-only support
 - [x] Add edit file tool with line-range safety
 - [x] Add shell tool with timeout, output truncation, and approval gates
-- [ ] Add search tools
+- [x] Add search tools
 - [ ] Add git tools
 
 ## Phase 3 - Agent Runtime

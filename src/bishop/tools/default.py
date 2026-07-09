@@ -6,6 +6,7 @@ from ..approval import ApprovalPolicy
 from ..audit import AuditSink, NullAuditSink
 from .file_tools import register_file_tools
 from .registry import ToolRegistry
+from .search_tools import register_search_tools
 from .shell_tools import register_shell_tools
 
 
@@ -29,4 +30,5 @@ def build_default_registry(
         audit_sink=audit_sink,
         approval_policy=approval_policy,
     )
+    register_search_tools(registry=registry, workspace=workspace)
     return registry
