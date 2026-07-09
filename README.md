@@ -1,8 +1,8 @@
-# Bernie Clean
+# Bishop Clean
 
-Clean rebuild of the Bernie/BernAgent local coding-agent runtime.
+Clean rebuild of the Bishop local coding-agent runtime.
 
-`bernie-v1-reference` is treated as source material only. This project keeps the useful concepts while rebuilding the runtime with clear boundaries, testable services, and minimal coupling.
+The old `bernie-v1-reference` repository is treated as source material only. Bishop keeps the useful concepts while rebuilding the runtime with clear boundaries, testable services, and minimal coupling.
 
 ## Goals
 
@@ -25,4 +25,3 @@ Clean rebuild of the Bernie/BernAgent local coding-agent runtime.
 ## Deadline
 
 Target functional rebuild by Monday, July 13, 2026.
-

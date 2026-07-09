@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from bernie.agent import AgentLoop
-from bernie.model import ModelMessage, ToolCall
-from bernie.tools.registry import ToolRegistry, ToolSpec
+from bishop.agent import AgentLoop
+from bishop.model import ModelMessage, ToolCall
+from bishop.tools.registry import ToolRegistry, ToolSpec
 
 
 @dataclass
@@ -18,7 +18,7 @@ def test_agent_loop_returns_final_text_without_tools():
     loop = AgentLoop(
         model_client=model,
         registry=ToolRegistry(),
-        system_prompt="You are Bernie.",
+        system_prompt="You are Bishop.",
     )
 
     result = loop.run("say done")
@@ -46,7 +46,7 @@ def test_agent_loop_dispatches_tool_call_then_finishes():
     loop = AgentLoop(
         model_client=model,
         registry=registry,
-        system_prompt="You are Bernie.",
+        system_prompt="You are Bishop.",
     )
 
     result = loop.run("use tool")
@@ -66,7 +66,7 @@ def test_agent_loop_stops_at_max_turns():
     loop = AgentLoop(
         model_client=model,
         registry=ToolRegistry(),
-        system_prompt="You are Bernie.",
+        system_prompt="You are Bishop.",
         max_turns=2,
     )
 

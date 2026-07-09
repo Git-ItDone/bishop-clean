@@ -1,4 +1,4 @@
-# Bernie Clean Roadmap
+# Bishop Clean Roadmap
 
 Deadline target: Monday, July 13, 2026.
 
@@ -12,7 +12,7 @@ Deadline target: Monday, July 13, 2026.
 - [x] Create tool registry
 - [x] Create read-only file tool
 - [x] Add initial tests
-- [ ] Commit initial clean rebuild
+- [x] Commit initial clean rebuild
 
 ## Phase 2 - Safety and Tools
 
@@ -55,5 +55,5 @@ Deadline target: Monday, July 13, 2026.
 - [ ] Full test suite
 - [ ] Local smoke test against Ollama
 - [ ] Package install test
-- [ ] GitHub repo publish
+- [x] GitHub repo publish
 - [ ] Documentation cleanup

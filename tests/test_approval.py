@@ -1,5 +1,5 @@
-from bernie.approval import ApprovalChoice, ApprovalPolicy
-from bernie.safety import RiskTier, SafetyDecision
+from bishop.approval import ApprovalChoice, ApprovalPolicy
+from bishop.safety import RiskTier, SafetyDecision
 
 
 def test_approval_policy_remembers_allow_always():

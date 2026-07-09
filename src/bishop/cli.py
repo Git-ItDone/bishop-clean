@@ -31,7 +31,7 @@ def main(
     confirm_commands: bool,
     list_tools: bool,
 ) -> None:
-    """Run Bernie against a concrete local coding task."""
+    """Run Bishop against a concrete local coding task."""
     config = RuntimeConfig(
         workspace=workspace.resolve(),
         model=model,

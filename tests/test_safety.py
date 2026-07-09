@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from bernie.safety import RiskTier, classify_command, classify_write, is_protected_path
+from bishop.safety import RiskTier, classify_command, classify_write, is_protected_path
 
 
 def test_classify_safe_command():

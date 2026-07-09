@@ -1,4 +1,4 @@
-from bernie.tools.registry import ToolRegistry, ToolSpec
+from bishop.tools.registry import ToolRegistry, ToolSpec
 
 
 def test_registry_registers_and_calls_tool():

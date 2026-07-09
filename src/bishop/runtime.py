@@ -20,9 +20,9 @@ def run_task(config: RuntimeConfig, task: str | None, list_tools: bool = False) 
     if list_tools:
         return "\n".join(registry.names())
     if not task:
-        return "No task provided. REPL mode is not implemented in Bernie Clean yet."
+        return "No task provided. REPL mode is not implemented in Bishop Clean yet."
     return (
-        "Bernie Clean runtime skeleton is ready.\n"
+        "Bishop Clean runtime skeleton is ready.\n"
         f"Workspace: {config.workspace}\n"
         f"Model: {config.model}\n"
         f"Task: {task}\n"

@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from bernie.approval import ApprovalPolicy
-from bernie.tools.file_tools import resolve_workspace_path
-from bernie.tools.default import build_default_registry
+from bishop.approval import ApprovalPolicy
+from bishop.tools.file_tools import resolve_workspace_path
+from bishop.tools.default import build_default_registry
 
 
 def test_resolve_workspace_path_blocks_escape(tmp_path: Path):

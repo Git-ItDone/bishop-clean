@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from bernie.approval import ApprovalPolicy
-from bernie.tools.default import build_default_registry
+from bishop.approval import ApprovalPolicy
+from bishop.tools.default import build_default_registry
 
 
 def test_run_safe_command(tmp_path: Path):

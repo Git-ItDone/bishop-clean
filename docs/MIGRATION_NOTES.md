@@ -35,7 +35,7 @@ Reason: model-swap tests raise `ModelNotPulledError` for `qwen3-coder:30b`; the 
 
 ## Rebuild Decision
 
-Start fresh under `bernie-clean` with small tested boundaries:
+Start fresh under `bishop-clean` with small tested boundaries:
 
 1. Tool registry
 2. Workspace path policy

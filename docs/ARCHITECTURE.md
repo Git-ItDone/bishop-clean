@@ -1,6 +1,6 @@
-# Bernie Clean Architecture
+# Bishop Clean Architecture
 
-Bernie Clean is a local-first coding-agent runtime rebuilt from Bernie V1 concepts with explicit boundaries.
+Bishop Clean is a local-first coding-agent runtime rebuilt from Bernie V1 concepts with explicit boundaries.
 
 ## Boundary Map
 

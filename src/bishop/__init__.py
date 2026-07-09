@@ -1,4 +1,4 @@
-"""Bernie Clean local agent runtime."""
+"""Bishop Clean local agent runtime."""
 
 __all__ = ["__version__"]
 

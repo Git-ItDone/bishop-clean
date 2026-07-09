@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from bernie.audit import JsonlAuditSink
-from bernie.safety import RiskTier, SafetyDecision
+from bishop.audit import JsonlAuditSink
+from bishop.safety import RiskTier, SafetyDecision
 
 
 def test_jsonl_audit_sink_writes_entry(tmp_path: Path):
