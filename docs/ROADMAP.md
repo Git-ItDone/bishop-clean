@@ -16,12 +16,12 @@ Deadline target: Monday, July 13, 2026.
 
 ## Phase 2 - Safety and Tools
 
-- [ ] Port/rewrite pure safety classifier
-- [ ] Add audit sink
-- [ ] Add approval policy
-- [ ] Add write file tool with plan-only support
+- [x] Port/rewrite pure safety classifier
+- [x] Add audit sink
+- [x] Add approval policy
+- [x] Add write file tool with plan-only support
 - [ ] Add edit file tool with line-range safety
-- [ ] Add shell tool with timeout, output truncation, and approval gates
+- [x] Add shell tool with timeout, output truncation, and approval gates
 - [ ] Add search tools
 - [ ] Add git tools
 
@@ -57,4 +57,3 @@ Deadline target: Monday, July 13, 2026.
 - [ ] Package install test
 - [ ] GitHub repo publish
 - [ ] Documentation cleanup
-
