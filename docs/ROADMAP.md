@@ -27,11 +27,11 @@ Deadline target: Monday, July 13, 2026.
 
 ## Phase 3 - Agent Runtime
 
-- [ ] Define model-client protocol
+- [x] Define model-client protocol
 - [ ] Add Ollama/OpenAI-compatible client
 - [ ] Normalize tool calls from structured and fallback text output
-- [ ] Build agent loop against protocols
-- [ ] Add max-turn and malformed-tool-call handling
+- [x] Build agent loop against protocols
+- [x] Add max-turn handling
 - [ ] Add final response contract
 
 ## Phase 4 - Context and Memory
