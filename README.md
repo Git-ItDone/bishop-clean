@@ -104,7 +104,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundary ownership and [doc
 uv run pytest -q
 ```
 
-Current local verification: **51 passing tests**.
+Current local verification: **52 passing tests**.
 
 ## Project context
 

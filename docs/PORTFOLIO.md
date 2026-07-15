@@ -35,7 +35,7 @@ The first version of an agent should not be expanded by adding more tools. It sh
 
 ## Verification
 
-The repository includes a 51-test suite that covers safety, approval behavior, file boundaries, shell limits, audit records, registry behavior, model-response parsing, and multi-turn agent execution. GitHub Actions runs the suite on every push and pull request.
+The repository includes a 52-test suite that covers safety, approval behavior, file boundaries, shell limits, audit records, registry behavior, model-response parsing, and multi-turn agent execution. GitHub Actions runs the suite on every push and pull request.
 
 ## Honest status
 

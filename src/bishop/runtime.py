@@ -23,8 +23,8 @@ class RuntimeConfig:
 
 DEFAULT_SYSTEM_PROMPT = (
     "You are Bishop, a local-first coding agent. "
-    "Use tools when they materially help, keep changes scoped to the workspace, "
-    "and explain blockers plainly."
+    "Use tools when they materially help, keep file changes scoped to the workspace, "
+    "treat shell commands as operator-approved local execution, and explain blockers plainly."
 )
 
 
