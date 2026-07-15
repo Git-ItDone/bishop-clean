@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import re
 from typing import Any
 
 import httpx
@@ -44,10 +46,35 @@ class OllamaChatClient:
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise ModelClientError("model response did not match chat completion schema") from exc
 
-        return ModelMessage(
-            content=message.get("content"),
-            tool_calls=tuple(self._parse_tool_call(item) for item in message.get("tool_calls") or ()),
-        )
+        content = message.get("content")
+        tool_calls = tuple(self._parse_tool_call(item) for item in message.get("tool_calls") or ())
+        if not tool_calls:
+            fallback = self._parse_fallback_tool_call(content)
+            if fallback is not None:
+                return ModelMessage(content=None, tool_calls=(fallback,))
+        return ModelMessage(content=content, tool_calls=tool_calls)
+
+    @staticmethod
+    def _parse_fallback_tool_call(content: Any) -> ToolCall | None:
+        if not isinstance(content, str):
+            return None
+        candidate = content.strip()
+        fence = re.search(r"```(?:json)?\s*\n?(\{.*?\})\s*```", candidate, flags=re.DOTALL)
+        if fence:
+            candidate = fence.group(1).strip()
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError:
+            return None
+        if not isinstance(payload, dict):
+            return None
+        name = payload.get("name")
+        arguments = payload.get("arguments")
+        if not isinstance(name, str) or not name:
+            return None
+        if not isinstance(arguments, (dict, str)) and arguments is not None:
+            return None
+        return ToolCall(id=f"fallback_{name}", name=name, arguments=arguments)
 
     @staticmethod
     def _parse_tool_call(item: dict[str, Any]) -> ToolCall:

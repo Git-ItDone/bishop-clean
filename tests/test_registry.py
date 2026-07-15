@@ -46,3 +46,19 @@ def test_registry_accepts_json_string_arguments():
 
     assert registry.call("echo", '{"text": "hi"}') == "hi"
 
+
+def test_registry_returns_error_for_unexpected_tool_arguments():
+    registry = ToolRegistry()
+    registry.register(
+        ToolSpec(
+            name="no_args",
+            description="Returns a constant.",
+            parameters={"type": "object", "properties": {}},
+            fn=lambda: "ok",
+        )
+    )
+
+    result = registry.call("no_args", {"unexpected": "value"})
+
+    assert result.startswith("ERROR: invalid arguments for tool 'no_args':")
+

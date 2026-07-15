@@ -10,4 +10,5 @@ build/
 .env
 .env.*
 !.env.example
+.bishop/
 

@@ -17,7 +17,7 @@ from .runtime import RuntimeConfig, run_task
     show_default=True,
     help="Workspace root for tool execution.",
 )
-@click.option("--model", default="qwen3-coder:30b", show_default=True)
+@click.option("--model", default="qwen2.5-coder:1.5b", show_default=True)
 @click.option("--max-turns", default=40, show_default=True)
 @click.option("--confirm-writes", is_flag=True, default=False)
 @click.option("--confirm-commands", is_flag=True, default=False)

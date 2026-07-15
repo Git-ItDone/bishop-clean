@@ -1,59 +1,47 @@
-# Bishop Clean Roadmap
+# Bishop Roadmap
 
-Deadline target: Monday, July 13, 2026.
+## Current release posture
 
-## Phase 1 - Foundation
+Bishop is a working, local-first **v0.1.0 runtime** with explicit tool, safety, approval, and audit boundaries. It is intentionally not presented as a finished autonomous platform. The next work should deepen core reliability before adding new surfaces.
 
-- [x] Clone V1 reference repo
-- [x] Baseline V1 inventory
-- [x] Baseline V1 tests
-- [x] Create clean package skeleton
-- [x] Create CLI shell
-- [x] Create tool registry
-- [x] Create read-only file tool
-- [x] Add initial tests
-- [x] Commit initial clean rebuild
+## Phase 1 — Foundation
 
-## Phase 2 - Safety and Tools
+- [x] Clean package skeleton and CLI
+- [x] Model-client protocol
+- [x] Explicit tool registry and execution contracts
+- [x] Workspace-confined read, write, edit, shell, and search tools
+- [x] Tests for core boundaries
 
-- [x] Port/rewrite pure safety classifier
-- [x] Add audit sink
-- [x] Add approval policy
-- [x] Add write file tool with plan-only support
-- [x] Add edit file tool with line-range safety
-- [x] Add shell tool with timeout, output truncation, and approval gates
-- [x] Add search tools
-- [ ] Add git tools
+## Phase 2 — Safe local execution
 
-## Phase 3 - Agent Runtime
+- [x] Pure safety classifier
+- [x] Approval policy separated from risk classification
+- [x] CLI-level write and command confirmations
+- [x] Persistent JSONL audit records
+- [x] Timeout and output caps for shell execution
+- [x] Structured and fallback JSON tool-call normalization
+- [x] Invalid tool-argument rejection without crashing the agent loop
 
-- [x] Define model-client protocol
-- [x] Add Ollama/OpenAI-compatible client
-- [ ] Normalize tool calls from structured and fallback text output
-- [x] Build agent loop against protocols
-- [x] Add max-turn handling
-- [ ] Add final response contract
+## Phase 3 — Verified delivery baseline
 
-## Phase 4 - Context and Memory
+- [x] Full unit test suite
+- [x] Local Ollama smoke test using `qwen2.5-coder:1.5b`
+- [x] Built-wheel installation smoke test
+- [x] GitHub Actions test workflow
+- [x] Public README, architecture, portfolio case study, and license
 
-- [ ] Add project detection
-- [ ] Add context collection
-- [ ] Add identity/system prompt assembly
-- [ ] Add session save/load
-- [ ] Add workspace memory summaries
-- [ ] Add compaction after core loop works
+## Next, in order
 
-## Phase 5 - Runtime Surfaces
+1. [ ] Improve live tool-use reliability across supported local models and add integration fixtures based on real provider responses.
+2. [ ] Add Git-native tools with the existing safety/approval/audit contracts.
+3. [ ] Add a final-response contract that reports completed work, evidence, and remaining risk.
+4. [ ] Add durable session memory and workspace summaries only after the core loop is stable.
+5. [ ] Add REPL/resume mode.
+6. [ ] Consider ACP and a local host API only after the CLI is proven in repeated real tasks.
 
-- [x] Polish CLI one-shot mode
-- [ ] Add REPL/resume mode
-- [ ] Add ACP adapter
-- [ ] Add local host API only after CLI is stable
+## Non-goals
 
-## Phase 6 - Hardening
-
-- [ ] Full test suite
-- [ ] Local smoke test against Ollama
-- [ ] Package install test
-- [x] GitHub repo publish
-- [ ] Documentation cleanup
+- Hiding write or command risk from the user
+- Claiming production autonomy before the runtime earns it
+- Copying V1 internals wholesale
+- Adding cloud dependencies by default

@@ -82,6 +82,78 @@ def test_ollama_client_normalizes_tool_calls():
     assert result.tool_calls[0].arguments == "{\"path\":\"README.md\"}"
 
 
+def test_ollama_client_normalizes_fallback_json_tool_call():
+    def handler(request):
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": '{"name":"read_file","arguments":{"path":"README.md"}}',
+                        }
+                    }
+                ]
+            },
+        )
+
+    client = make_client(handler)
+
+    result = client.complete(messages=[], tools=[])
+
+    assert result.content is None
+    assert len(result.tool_calls) == 1
+    assert result.tool_calls[0].id == "fallback_read_file"
+    assert result.tool_calls[0].name == "read_file"
+    assert result.tool_calls[0].arguments == {"path": "README.md"}
+
+
+def test_ollama_client_normalizes_markdown_fenced_fallback_tool_call():
+    def handler(request):
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": "```json\n{\"name\":\"read_file\",\"arguments\":{\"path\":\"README.md\"}}\n```",
+                        }
+                    }
+                ]
+            },
+        )
+
+    client = make_client(handler)
+
+    result = client.complete(messages=[], tools=[])
+
+    assert len(result.tool_calls) == 1
+    assert result.tool_calls[0].name == "read_file"
+
+
+def test_ollama_client_normalizes_embedded_fenced_fallback_tool_call():
+    def handler(request):
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": "I will inspect it first.\n\n```json\n{\"name\":\"read_file\",\"arguments\":{\"path\":\"README.md\"}}\n```\n\nThen I will answer.",
+                        }
+                    }
+                ]
+            },
+        )
+
+    client = make_client(handler)
+
+    result = client.complete(messages=[], tools=[])
+
+    assert len(result.tool_calls) == 1
+    assert result.tool_calls[0].arguments == {"path": "README.md"}
+
+
 def test_ollama_client_rejects_bad_schema():
     def handler(request):
         return httpx.Response(200, json={"not_choices": []})

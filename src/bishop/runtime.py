@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .agent import AgentLoop
+from .approval import ApprovalChoice, ApprovalPolicy
+from .audit import JsonlAuditSink
 from .clients import OllamaChatClient
 from .model import ModelClient, ModelClientError
 from .tools.default import build_default_registry
@@ -12,10 +14,11 @@ from .tools.default import build_default_registry
 @dataclass(frozen=True)
 class RuntimeConfig:
     workspace: Path
-    model: str = "qwen3-coder:30b"
+    model: str = "qwen2.5-coder:1.5b"
     max_turns: int = 40
     confirm_writes: bool = False
     confirm_commands: bool = False
+    audit_log: Path | None = None
 
 
 DEFAULT_SYSTEM_PROMPT = (
@@ -25,13 +28,31 @@ DEFAULT_SYSTEM_PROMPT = (
 )
 
 
+def _build_approval_policy(config: RuntimeConfig) -> ApprovalPolicy:
+    def approve(_decision, action: str, _context: str) -> ApprovalChoice:
+        if action in {"write_file", "edit_file"}:
+            allowed = config.confirm_writes
+        elif action == "run_command":
+            allowed = config.confirm_commands
+        else:
+            allowed = False
+        return ApprovalChoice.ALLOW_ONCE if allowed else ApprovalChoice.REJECT_ONCE
+
+    return ApprovalPolicy(approve)
+
+
 def run_task(
     config: RuntimeConfig,
     task: str | None,
     list_tools: bool = False,
     model_client: ModelClient | None = None,
 ) -> str:
-    registry = build_default_registry(workspace=config.workspace)
+    audit_log = config.audit_log or config.workspace / ".bishop" / "audit.jsonl"
+    registry = build_default_registry(
+        workspace=config.workspace,
+        audit_sink=JsonlAuditSink(audit_log),
+        approval_policy=_build_approval_policy(config),
+    )
     if list_tools:
         return "\n".join(registry.names())
     if not task:

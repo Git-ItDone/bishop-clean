@@ -26,7 +26,8 @@ def test_read_file_returns_numbered_lines(tmp_path: Path):
 
 
 def test_write_file_inside_workspace(tmp_path: Path):
-    registry = build_default_registry(tmp_path)
+    policy = ApprovalPolicy(lambda decision, action, context: True)
+    registry = build_default_registry(tmp_path, approval_policy=policy)
 
     result = registry.call("write_file", {"path": "out.txt", "content": "hello"})
 
@@ -71,7 +72,8 @@ def test_dangerous_write_uses_approval(tmp_path: Path):
 def test_edit_file_replaces_line_range(tmp_path: Path):
     target = tmp_path / "notes.txt"
     target.write_text("one\ntwo\nthree\n", encoding="utf-8")
-    registry = build_default_registry(tmp_path)
+    policy = ApprovalPolicy(lambda decision, action, context: True)
+    registry = build_default_registry(tmp_path, approval_policy=policy)
 
     result = registry.call(
         "edit_file",

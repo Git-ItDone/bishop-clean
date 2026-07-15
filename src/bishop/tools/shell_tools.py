@@ -58,25 +58,27 @@ def register_shell_tools(
             )
             return f"REFUSED: blocked command ({decision.reason})"
 
-        if decision.tier.at_least(RiskTier.DANGEROUS):
-            if approval_policy is None:
-                audit_sink.record(
-                    tool="run_command",
-                    decision=decision,
-                    outcome="no_approver",
-                    workspace=workspace,
-                    details=details,
-                )
-                return f"REFUSED: command requires approval ({decision.reason})"
-            if not approval_policy.decide(decision, command, str(workdir)):
-                audit_sink.record(
-                    tool="run_command",
-                    decision=decision,
-                    outcome="denied",
-                    workspace=workspace,
-                    details=details,
-                )
-                return "Command cancelled."
+        # Shell commands are never sandboxed: even a low-risk command can access
+        # resources outside the workspace cwd. Require explicit permission for every
+        # executable command rather than relying solely on risk classification.
+        if approval_policy is None:
+            audit_sink.record(
+                tool="run_command",
+                decision=decision,
+                outcome="no_approver",
+                workspace=workspace,
+                details=details,
+            )
+            return f"REFUSED: command requires approval ({decision.reason})"
+        if not approval_policy.decide(decision, "run_command", command):
+            audit_sink.record(
+                tool="run_command",
+                decision=decision,
+                outcome="denied",
+                workspace=workspace,
+                details=details,
+            )
+            return "Command cancelled."
 
         try:
             completed = subprocess.run(
@@ -112,7 +114,7 @@ def register_shell_tools(
     registry.register(
         ToolSpec(
             name="run_command",
-            description="Run a shell command inside the workspace with timeout and safety gates.",
+            description="Run a shell command with the workspace as its current directory. Every command requires explicit approval; this is not a sandbox.",
             parameters={
                 "type": "object",
                 "properties": {

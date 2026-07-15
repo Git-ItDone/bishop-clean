@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import json
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -48,7 +49,12 @@ class ToolRegistry:
         parsed = self._parse_arguments(arguments)
         if not isinstance(parsed, dict):
             return f"ERROR: tool {name!r} expected object arguments."
-        return self._tools[name].fn(**parsed)
+        tool = self._tools[name]
+        try:
+            inspect.signature(tool.fn).bind(**parsed)
+        except TypeError as exc:
+            return f"ERROR: invalid arguments for tool {name!r}: {exc}"
+        return tool.fn(**parsed)
 
     @staticmethod
     def _parse_arguments(arguments: dict[str, Any] | str | None) -> dict[str, Any] | str:

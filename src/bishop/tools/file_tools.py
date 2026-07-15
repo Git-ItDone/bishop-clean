@@ -109,7 +109,7 @@ def register_file_tools(
             )
             return f"REFUSED: blocked write ({decision.reason})"
 
-        if decision.tier.at_least(RiskTier.DANGEROUS):
+        if decision.requires_approval:
             if approval_policy is None:
                 audit_sink.record(
                     tool="write_file",
@@ -220,7 +220,7 @@ def register_file_tools(
             )
             return f"REFUSED: blocked edit ({decision.reason})"
 
-        if decision.tier.at_least(RiskTier.DANGEROUS):
+        if decision.requires_approval:
             if approval_policy is None:
                 audit_sink.record(
                     tool="edit_file",
