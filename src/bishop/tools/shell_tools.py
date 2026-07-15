@@ -26,17 +26,32 @@ def register_shell_tools(
         plan_only: bool = False,
     ) -> str:
         workdir = workspace.resolve()
+        decision = classify_command(command)
+        details = {"command": command, "cwd": str(workdir), "plan_only": plan_only}
+
         if cwd:
             workdir = (workdir / cwd).resolve()
             try:
                 workdir.relative_to(workspace.resolve())
             except ValueError:
+                audit_sink.record(
+                    tool="run_command",
+                    decision=decision,
+                    outcome="invalid_cwd",
+                    workspace=workspace,
+                    details={**details, "cwd": cwd},
+                )
                 return f"ERROR: cwd escapes workspace: {cwd}"
         if not workdir.exists():
+            audit_sink.record(
+                tool="run_command",
+                decision=decision,
+                outcome="invalid_cwd",
+                workspace=workspace,
+                details={**details, "cwd": str(workdir)},
+            )
             return f"ERROR: cwd does not exist: {cwd}"
-
-        decision = classify_command(command)
-        details = {"command": command, "cwd": str(workdir), "plan_only": plan_only}
+        details["cwd"] = str(workdir)
 
         if plan_only:
             audit_sink.record(
@@ -91,6 +106,13 @@ def register_shell_tools(
                 timeout=timeout,
             )
         except subprocess.TimeoutExpired:
+            audit_sink.record(
+                tool="run_command",
+                decision=decision,
+                outcome="timed_out",
+                workspace=workspace,
+                details=details,
+            )
             return f"ERROR: command timed out after {timeout}s"
 
         output = completed.stdout
@@ -114,7 +136,10 @@ def register_shell_tools(
     registry.register(
         ToolSpec(
             name="run_command",
-            description="Run a shell command with the workspace as its current directory. Every command requires explicit approval; this is not a sandbox.",
+            description=(
+                "Run a shell command with the workspace as its current directory. "
+                "Every command requires explicit approval; this is not a sandbox."
+            ),
             parameters={
                 "type": "object",
                 "properties": {
